@@ -3,7 +3,7 @@ var app = require('./app');
 var redis = require('redis');
 var client = redis.createClient()
 client.select('test'.length);
-client.flushall();
+client.flushdb();
 
 describe("Request to the root path", () => {
 
@@ -77,6 +77,13 @@ describe('Creating new cities', () => {
             .send('name=Springfield&description=where+the+simpsons+live')
             .expect(/Springfield/i, done);
     });
+
+    it('Validating the post empty name', (done) => {
+        request(app)
+            .post('/cities')
+            .send('name=&description=')
+            .expect(400, done);
+    });
 });
 
 describe('Delete the citye', () => {
@@ -92,6 +99,6 @@ describe('Delete the citye', () => {
     });
 
     afterEach(() => {
-        client.flushall();
+        client.flushdb();
     })
 });

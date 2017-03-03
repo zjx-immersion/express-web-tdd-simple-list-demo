@@ -15,6 +15,8 @@ app.use(bodyParser.json());
 
 var redis = require('redis');
 var client = redis.createClient();
+
+// console.log("Node Env: " + process.env.NODE_ENV + (process.env.NODE_ENV || 'development').length);
 client.select((process.env.NODE_ENV || 'development').length);
 
 //init data in redis
@@ -39,6 +41,11 @@ app.get('/cities', (req, res) => {
 
 app.post('/cities', (req, res) => {
     var newCity = req.body;
+
+    if (!newCity.name || !newCity.description) {
+        res.sendStatus(400);
+        return false;
+    }
     client.hset('cities', newCity.name, newCity.description, (err) => {
         if (err) throw err;
         // cities[newCity.name] = newCity.description;
