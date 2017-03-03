@@ -60,5 +60,18 @@ app.delete('/cities/:name', (req, res) => {
         res.sendStatus(204);
     });
 });
+
+app.get('/cities/:name', (req, res) => {
+    client.hget('cities', req.params.name, (err, description) => {
+        res.render('show.ejs', {
+            city: {
+                name: req.params.name,
+                description: description
+            }
+        });
+
+    });
+});
+
 // app.listen(3000);
 module.exports = app;
