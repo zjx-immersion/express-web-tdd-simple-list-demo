@@ -1,5 +1,9 @@
 var request = require('supertest');
 var app = require('./app');
+var redis = require('redis');
+var client = redis.createClient()
+client.select('test'.length);
+client.flushall();
 
 describe("Request to the root path", () => {
 
@@ -34,7 +38,8 @@ describe('Listen to the /cities', () => {
     it('Get initial cities', (done) => {
         request(app)
             .get('/cities')
-            .expect(JSON.stringify(['Lotopia', 'Caspiana', 'Indigo']), done);
+            // .expect(JSON.stringify(['Lotopia', 'Caspiana', 'Indigo']), done);
+            .expect(JSON.stringify([]), done)
     })
 });
 
@@ -72,4 +77,21 @@ describe('Creating new cities', () => {
             .send('name=Springfield&description=where+the+simpsons+live')
             .expect(/Springfield/i, done);
     });
+});
+
+describe('Delete the citye', () => {
+
+    beforeEach(() => {
+        client.hset('cities', 'chengdu', 'Beautiful city in China');
+    });
+
+    it('Return 204 code when delete some city', (done) => {
+        request(app)
+            .delete('/cities/chengdu')
+            .expect(204, done);
+    });
+
+    afterEach(() => {
+        client.flushall();
+    })
 });
