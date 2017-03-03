@@ -57,3 +57,19 @@ describe('Listen to the root path', () => {
             .expect(/cities/i, done);
     });
 });
+
+describe('Creating new cities', () => {
+    it('Return the 201 status code', (done) => {
+        request(app)
+            .post('/cities')
+            .send('name=Springfield&description=where+the+simpsons+live')
+            .expect(201, done);
+    });
+
+    it('Return the city name', (done) => {
+        request(app)
+            .post('/cities')
+            .send('name=Springfield&description=where+the+simpsons+live')
+            .expect(/Springfield/i, done);
+    });
+});
