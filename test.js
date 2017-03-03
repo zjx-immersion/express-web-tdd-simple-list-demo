@@ -88,7 +88,7 @@ describe('Creating new cities', () => {
 
 describe('Delete the citye', () => {
 
-    beforeEach(() => {
+    before(() => {
         client.hset('cities', 'chengdu', 'Beautiful city in China');
     });
 
@@ -98,7 +98,7 @@ describe('Delete the citye', () => {
             .expect(204, done);
     });
 
-    afterEach(() => {
+    after(() => {
         client.flushdb();
     })
 });
